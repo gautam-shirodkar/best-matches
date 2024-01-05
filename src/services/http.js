@@ -1,7 +1,9 @@
 import { QueryClient } from "@tanstack/react-query";
 export const queryClient = new QueryClient();
-export async function fetchEvents({ signal, searchQuery, max }) {
-  let url = "http://localhost:3000/matches";
+const baseUrl = "http://localhost:4000";
+
+export async function fetchMatches({ signal, searchQuery, max }) {
+  let url = `${baseUrl}/matches`;
   if (searchQuery && max) {
     url += `?search=${encodeURIComponent(searchQuery)}&max=${max}`;
   } else if (searchQuery) {
@@ -25,7 +27,7 @@ export async function fetchEvents({ signal, searchQuery, max }) {
 }
 
 export async function createNewMatch(matchData) {
-  const response = await fetch(`http://localhost:3000/matches`, {
+  const response = await fetch(`${baseUrl}/matches`, {
     method: "POST",
     body: JSON.stringify(matchData),
     headers: {
@@ -40,13 +42,13 @@ export async function createNewMatch(matchData) {
     throw error;
   }
 
-  const { event } = await response.json();
+  const { match } = await response.json();
 
-  return event;
+  return match;
 }
 
 export async function fetchImages({ signal }) {
-  const response = await fetch(`http://localhost:3000/matches/images`, {
+  const response = await fetch(`${baseUrl}/matches/images`, {
     signal,
   });
 
@@ -58,13 +60,12 @@ export async function fetchImages({ signal }) {
   }
 
   const { images } = await response.json();
-
   return images;
 }
 
 export async function fetchMatch({ id, signal }) {
   console.log("id", id);
-  const response = await fetch(`http://localhost:3000/matches/${id}`, {
+  const response = await fetch(`${baseUrl}/matches/${id}`, {
     signal,
   });
 
@@ -82,7 +83,7 @@ export async function fetchMatch({ id, signal }) {
 
 export async function deleteMatch({ id }) {
   console.log(id);
-  const response = await fetch(`http://localhost:3000/matches/${id}`, {
+  const response = await fetch(`${baseUrl}/matches/${id}`, {
     method: "DELETE",
   });
 
@@ -97,9 +98,9 @@ export async function deleteMatch({ id }) {
 }
 
 export async function updateMatch({ id, match }) {
-  const response = await fetch(`http://localhost:3000/matches/${id}`, {
+  const response = await fetch(`${baseUrl}/matches/${id}`, {
     method: "PUT",
-    body: JSON.stringify({ event }),
+    body: JSON.stringify({ match }),
     headers: {
       "Content-Type": "application/json",
     },
